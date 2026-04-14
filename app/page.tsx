@@ -85,6 +85,19 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
+  const isPrevDisabled = useMemo(() => {
+    const today = new Date();
+    const day = today.getDay();
+    const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+    const thisWeekMonday = new Date(today.setDate(diff));
+    thisWeekMonday.setHours(0, 0, 0, 0);
+
+    const currentMode = new Date(currentWeekMonday);
+    currentMode.setHours(0, 0, 0, 0);
+
+    return currentMode.getTime() <= thisWeekMonday.getTime();
+  }, [currentWeekMonday]);
+
   const weekDays = useMemo(() => {
     return Array.from({ length: 5 }).map((_, i) => {
       const d = new Date(currentWeekMonday);
@@ -187,6 +200,7 @@ export default function Home() {
       <main className="max-w-6xl mx-auto px-4 pt-24 pb-12">
         <WeekNav
           currentWeekMonday={currentWeekMonday}
+          disablePrev={isPrevDisabled}
           onPrev={() => {
             const d = new Date(currentWeekMonday);
             d.setDate(d.getDate() - 7);

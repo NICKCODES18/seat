@@ -16,6 +16,7 @@ export function DayTabs({ weekDays, selectedDate, onSelect }: DayTabsProps) {
         const dStr = formatYMD(d);
         const isSelected = dStr === formatYMD(selectedDate);
         const dayIsHoliday = isHoliday(dStr);
+        const isPastDay = dStr < todayStr;
         const batchLabel = isDesignatedDay(1, d)
           ? "Batch 1"
           : isDesignatedDay(2, d)
@@ -26,8 +27,9 @@ export function DayTabs({ weekDays, selectedDate, onSelect }: DayTabsProps) {
           <Button
             key={dStr}
             variant={isSelected ? "default" : "outline"}
-            className={`relative flex flex-col pb-6 pt-4 px-5 h-auto min-w-22.5 whitespace-nowrap rounded-xl transition-all${dayIsHoliday ? " opacity-55" : ""}`}
+            className={`relative flex flex-col pb-6 pt-4 px-5 h-auto min-w-22.5 whitespace-nowrap rounded-xl transition-all${(dayIsHoliday || isPastDay) ? " opacity-55" : ""}`}
             onClick={() => onSelect(d)}
+            disabled={isPastDay}
           >
             <span className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-0.5">
               {d.toLocaleDateString(undefined, { weekday: "short" })}
